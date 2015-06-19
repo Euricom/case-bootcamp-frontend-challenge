@@ -1,17 +1,17 @@
-var express = require('express');
+var express    	= require('express'),
+    include     = require('include'),
+	bodyParser 	= require('body-parser'),
+ 	router 		= require('./router.js');
+
 var app = express();
 
-// respond with "hello world" when a GET request is made to the homepage
-app.get('/', function(req, res) {
-  res.send('hello world');
-});
+console.info('configuring body parser...');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-var port = process.env.PORT || process.env.DEFAULT_PORT || 9000
-var server = app.listen(port, function () {
+console.info('configuring routes...');
+app.use('/API', router);
 
-  var host = server.address().address;
-  var port = server.address().port;
-
-  console.log('Example app listening at http://%s:%s', host, port);
-
-});
+console.info('starting application...');
+app.listen(9000);
+console.info('application started on port 9000');

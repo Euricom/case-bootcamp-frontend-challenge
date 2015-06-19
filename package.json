@@ -4,11 +4,15 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.12.4"
+    "bcrypt": "^0.8.3",
+    "body-parser": "^1.12.4",
+    "express": "^4.12.4",
+    "include": "^0.1.2"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
