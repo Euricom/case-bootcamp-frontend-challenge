@@ -2,7 +2,9 @@ var express    	= require('express'),
     include     = require('include'),
 	bodyParser 	= require('body-parser'),
 	cors 		= require('cors'),
- 	router 		= require('./router.js');
+	config 		= include('config'),
+ 	apiRouter 	= require('./apiRouter.js'),
+ 	publicRouter 	= require('./publicRouter.js');
 
 var app = express();
 
@@ -13,7 +15,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 console.info('configuring routes...');
-app.use('/API', router);
+app.use('/public', publicRouter);
+app.use('/api', apiRouter);
 
 console.info('starting application...');
 app.listen(9000);
