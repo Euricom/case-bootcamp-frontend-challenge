@@ -6,7 +6,8 @@ var express    	= require('express'),
  	apiRouter 	= require('./apiRouter.js'),
  	publicRouter 	= require('./publicRouter.js');
 
-var app = express();
+var app = express(),
+	port = process.env.PORT || 5000;
 
 console.info('configuring body parser...');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,5 +20,5 @@ app.use('/public', publicRouter);
 app.use('/api', apiRouter);
 
 console.info('starting application...');
-app.listen(9000);
-console.info('application started on port 9000');
+app.listen(port);
+console.info('application started on port ' + port);
