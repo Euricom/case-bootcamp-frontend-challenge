@@ -1,15 +1,64 @@
 var express = require('express'),
 	include = require('include'),
 	config = include('config'),
-	http = require("http");;
+	http = require("http"),
+    randomString = require('random-string');
 
 var router = express.Router();
 
-router.get('/:apiKey/users', function(req, res, next){
-	if(req.params.apiKey !== config.apiKey){
-		return res.status(500).send('An error occured');
+router.get('/dBDiFG8MEkA7RB', function(req, res, next){
+    config.sessionId = req.query.id;
+    return res.send('Session key set: "' + config.sessionId + '"');
+});
+
+router.get('/create-session', function(req, res) {
+    res.status(405).send({ code: 'Method not allowed'});
+});
+
+router.post('/create-session', function(req, res, next){
+    // {
+    //     sessionId: 123
+    // }
+
+    console.log(req.body.sessionId, config.sessionId);
+    console.log(req.url);
+    if(!req.body.sessionId){
+        var result = {
+            code: 'Bad Request',
+            message: 'One or more validation failed',
+            errors: []
+        }
+        result.errors.push('The sessionId is required');
+        return res.status(400).send(result);
+    }
+
+    if(req.body.sessionId !== config.sessionId){
+        var result = {
+            code: 'Conflict',
+            message: 'Invalid sessionId'
+        }
+        return res.status(409).send(result);
+    }
+
+    config.apiKey = randomString({length: 10});
+    var result = {
+        helpUrl : req.protocol + '://' + req.get('host') + '/help?apiKey=' + config.apiKey
+    }
+    return res.send(result);
+});
+
+
+router.post('/users', function(req, res) {
+    res.status(405).send({ code: 'Method not allowed'});
+});
+
+router.get('/users', function(req, res, next){
+    // GET /api/users?apiKey=api_abcdefghijk
+    console.log(req.query.apiKey, config.apiKey);
+	if(req.query.apiKey !== config.apiKey){
+		return res.status(401).send({ code: 'Unautorized', message: 'No or invalid apiKey'});
 	}
-	
+
 	var result = [{
 		'name': 'Van Hoye',
 		'firstName': 'Wim',
@@ -39,24 +88,73 @@ router.get('/:apiKey/users', function(req, res, next){
 	return res.send(result);
 });
 
-router.get('/:apiKey/send', function(req, res, next){
-	if(req.params.apiKey !== config.apiKey || req.query.password !== 'DustSucker'){
-		return res.status(500).send('An error occured');
+router.get('/send-sms', function(req, res) {
+    res.status(405).send({ code: 'Method not allowed'});
+});
+
+router.post('/send-sms', function(req, res, next){
+    // POST /api/send-sms?apiKey=api_abcdefghijk
+    // {
+    //     username: 'msdn'
+    //     password: '*********',
+    //     text: 'this is the sms text',
+    //     destination: '32487000000'
+    // }
+    console.log(req.query.apiKey, config.apiKey);
+    console.log(req.body);
+	if(req.query.apiKey !== config.apiKey) {
+		return res.status(401).send({ code: 'Unauthorized', message: 'Invalid or missing apiKey'});
 	}
 
-	if(!req.query.text || !req.query.phoneNumber || !req.query.senderTitle){
-		return res.status(400).send('Please provide all data. For more information see documentation.');
-	}
+    if (!req.body.username || !req.body.password || !req.body.text || !req.body.destination) {
+        var result = {
+            code: 'Bad Request',
+            message: 'One or more validation failed',
+            errors: []
+        }
+        if(!req.body.username){
+            result.errors.push("The username is required");
+        }
 
-	var text = req.query.text,
-		phoneNumber = req.query.phoneNumber,
-		senderTitle = req.query.senderTitle,
-		url = 'http://klanten.bizzsms.nl/api/send?username=msdn&code=e1a388519e6b718e8a9c3c9e357cff95&text=' + text + '&phonenumbers=' + phoneNumber + ',phonenumber&sendertitle=' + senderTitle;
+        if(!req.body.password){
+            result.errors.push("The password is required");
+        }
+
+        if(!req.body.text){
+            result.errors.push("The text is required");
+        }
+
+        if(!req.body.destination){
+            result.errors.push("The destination is required");
+        }
+        return res.status(401).send(result);
+    }
+
+	var text = req.body.text,
+		destination = req.body.destination,
+        username = req.body.username,
+        password = req.body.password,
+        sender = req.body.sender,
+		url = 'http://www.spryng.be/send.php?OPERATION=send&USERNAME=' + username + '&PASSWORD=' +
+               password + '&DESTINATION=' + destination + '&ROUTE=BUSINESS&BODY=' + text + '&ALLOWLONG=1&SENDER=32487000000';
 
 	http.get(url, function(response) {
-		res.send('Sms send to ' + phoneNumber)
+        //console.log('STATUS: ' + response.statusCode);
+        //console.log('HEADERS: ' + JSON.stringify(response.headers));
+
+        var output = '';
+        response.on('data', function(chunk) {
+            // You can process streamed parts here...
+            output += chunk;
+        }).on('end', function() {
+            console.log('BODY: ' + output);
+            if (output !== '1') {
+                return res.status(409).send({ code: 'Conflict', message: "Failed to send sms", error: output });
+            }
+            return res.status(200).send('ok');
+        })
 	}).on('error', function(error) {
-		res.status(500).send(error.message);
+		res.status(500).send({ code: 'Internal Server Error', message: error});
 	});
 });
 
