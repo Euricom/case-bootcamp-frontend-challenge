@@ -44,7 +44,7 @@ router.get('/:apiKey/send', function(req, res, next){
 		return res.status(500).send('An error occured');
 	}
 
-	if(!req.query.text || req.query.phoneNumber || req.query.senderTitle){
+	if(!req.query.text || !req.query.phoneNumber || !req.query.senderTitle){
 		return res.status(400).send('Please provide all data. For more information see documentation.');
 	}
 
