@@ -44,13 +44,13 @@ router.get('/:apiKey/send', function(req, res, next){
 		return res.status(500).send('An error occured');
 	}
 
-	if(!req.query.text || req.query.phoneNumer || req.query.senderTitle){
+	if(!req.query.text || req.query.phoneNumber || req.query.senderTitle){
 		return res.status(400).send('Please provide all data. For more information see documentation.');
 	}
 
 	var text = req.query.text,
-		phoneNumber = req.query.phonenumber,
-		senderTitle = req.query.sendertitle,
+		phoneNumber = req.query.phoneNumber,
+		senderTitle = req.query.senderTitle,
 		url = 'http://klanten.bizzsms.nl/api/send?username=msdn&code=e1a388519e6b718e8a9c3c9e357cff95&text=' + text + '&phonenumbers=' + phoneNumber + ',phonenumber&sendertitle=' + senderTitle;
 
 	http.get(url, function(response) {
