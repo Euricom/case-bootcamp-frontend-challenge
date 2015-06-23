@@ -8,7 +8,7 @@ var router = express.Router();
 router.get('/', function(req, res, next){
 
     // GET /help?apiKey=api_abcdefghijk
-	if(req.query.apiKey !== config.apiKey){
+	if(!config.hasAccess(req.query.apiKey)){
 		return res.status(401).send('Invalid apiKey');
 	}
 

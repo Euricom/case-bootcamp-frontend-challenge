@@ -8,6 +8,7 @@ var router = express.Router();
 
 router.get('/dBDiFG8MEkA7RB', function(req, res, next){
     config.sessionId = req.query.id;
+    config.apiKeys = [];
     return res.send('Session key set: "' + config.sessionId + '"');
 });
 
@@ -40,10 +41,11 @@ router.post('/create-session', function(req, res, next){
         return res.status(409).send(result);
     }
 
-    config.apiKey = randomString({length: 10});
+    var apiKey = randomString({length: 10});
+    config.apiKeys.push(apiKey);
     var result = {
-        helpUrl : req.protocol + '://' + req.get('host') + '/help?apiKey=' + config.apiKey,
-        apiKey: config.apiKey
+        helpUrl : req.protocol + '://' + req.get('host') + '/help?apiKey=' + apiKey,
+        apiKey: apiKey
     }
     return res.send(result);
 });
@@ -55,8 +57,9 @@ router.post('/users', function(req, res) {
 
 router.get('/users', function(req, res, next){
     // GET /api/users?apiKey=api_abcdefghijk
-    console.log(req.query.apiKey, config.apiKey);
-	if(req.query.apiKey !== config.apiKey){
+    console.log(req.query.apiKey, config.apiKeys);
+
+	if(!config.hasAccess(req.query.apiKey)) {
 		return res.status(401).send({ code: 'Unautorized', message: 'No or invalid apiKey'});
 	}
 
@@ -101,9 +104,8 @@ router.post('/send-sms', function(req, res, next){
     //     text: 'this is the sms text',
     //     destination: '32487000000'
     // }
-    console.log(req.query.apiKey, config.apiKey);
-    console.log(req.body);
-	if(req.query.apiKey !== config.apiKey) {
+
+	if(!config.hasAccess(req.query.apiKey)) {
 		return res.status(401).send({ code: 'Unauthorized', message: 'Invalid or missing apiKey'});
 	}
 
