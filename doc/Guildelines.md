@@ -56,8 +56,12 @@ Een HTTP POST doen vanuit javascript om de een SMS te sturen.
 Een vervolg op de twee bovenstaande. Vanuit javascript moet nu de input data vanuit de web pagina doorstuurd worden naar een service (API) via een post. Ook hier mogen ze niet vergeten de Content-Type door te geven.
 
 Omdat we hier cross domain gaan moet de web pagina vanuit een webserver draaien en kan een local file (file://....) niet gebruikt worden. Anders krijg je volgende error: "No ‘Access-Control-Allow-Origin’ header is present on the requested resource". Mogelijk oplossingen:
-- npm install serve; serve myPage.html
+- npm install serve
+  serve .
+- python -m http.server (win, indien python 3.x installed)
+- python -m SimpleHTTPServer (mac)
 - webstorm: open in browser
-- iisexpress: map to folder
 
 Extra hier is dat ze voor de send-sms nog een username/password nodig hebben die ze nog niet gekregen hebben. De bedoeling is dat ze deze komen vragen.
+
+En de 'destination' (phone number) is in MSISDN formaat. Door de kandidaat uit te zoeken wat dit formaat wil zeggen: international format without leading “00” or “+”.
