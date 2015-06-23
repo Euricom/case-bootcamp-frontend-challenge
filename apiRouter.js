@@ -42,7 +42,8 @@ router.post('/create-session', function(req, res, next){
 
     config.apiKey = randomString({length: 10});
     var result = {
-        helpUrl : req.protocol + '://' + req.get('host') + '/help?apiKey=' + config.apiKey
+        helpUrl : req.protocol + '://' + req.get('host') + '/help?apiKey=' + config.apiKey,
+        apiKey: config.apiKey
     }
     return res.send(result);
 });
