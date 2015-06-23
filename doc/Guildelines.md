@@ -10,6 +10,8 @@ op dezelfde moment
 
 	http://bootcamp-challenge.herokuapp.com/api/dBDiFG8MEkA7RB?id=123
 
+Als je de sessionId opnieuw zet worden alle vorige apiKeys gewist (zie create-session).
+
 ## Challenge 1
 
 Een HTTP POST doen. Hier kunnen verschillende tools voor gebruikt worden:
@@ -32,7 +34,7 @@ Header (niet vergeten)
 
 	'Content-Type': 'application/json'
 
-Als de create-session lukt wordt er een apiToken teruggegeven die gebruikt kan worden voor de get users en send sms. Let op dat indien je de create-session opnieuw uitvoerdt de vorige vervalt.
+Als de create-session lukt wordt er een apiToken teruggegeven die gebruikt kan worden voor de get users en send sms. Je kan meerdere sessions creëren.
 
 ## Challenge 2
 
