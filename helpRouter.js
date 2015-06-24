@@ -13,7 +13,7 @@ router.get('/', function(req, res, next){
 	}
 
 	return res.render('help', {
-        apiKey: config.apiKey
+        apiKey: req.query.apiKey
     });
 });
 
