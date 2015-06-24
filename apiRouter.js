@@ -130,7 +130,7 @@ router.post('/send-sms', function(req, res, next){
         if(!req.body.destination){
             result.errors.push("The destination is required");
         }
-        return res.status(401).send(result);
+        return res.status(400).send(result);
     }
 
 	var text = req.body.text,
