@@ -5,7 +5,8 @@ var express    	= require('express'),
 	config 		= include('config'),
  	apiRouter 	= require('./apiRouter.js'),
     helpRouter  = require('./helpRouter.js'),
-    hbs         = require('express-handlebars');
+    hbs         = require('express-handlebars'),
+    fs          = require('fs');
 
 var app = express(),
 	port = process.env.PORT || 5000;
@@ -22,26 +23,19 @@ app.use(cors());
 
 console.info('configuring routes...');
 
-// http://server/public/dBDiFG8MEkA7RB
-// http://server/public/create-session/:sessionId
-// http://server/api/:apiKey/users
-// http://server/help/:apiKey
-
-// GET http://server/api/dBDiFG8MEkA7RB
-// POST http://server/api/create-session
-// GET http://server/api/:apiKey/users
-
-// POST http://server/api/:apiKey/send-sms
-
-
-// GET http://server/help/:apiKey
-
-
-//app.use('/', publicRouter);
 app.use('/api', apiRouter);
 app.use('/help', helpRouter);
 app.use('', function(req, res) {
     res.status(404).send("Page not found");
+});
+
+// read config from disk
+fs.readFile("./config.json", 'utf8', function(err, json) {
+    if (!json)
+        return;
+    var data = JSON.parse(json);
+    config.sessionId = data.sessionId;
+    config.apiKeys = data.apiKeys;
 });
 
 console.info('starting application...');

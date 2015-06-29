@@ -9,6 +9,7 @@ var router = express.Router();
 router.get('/dBDiFG8MEkA7RB', function(req, res, next){
     config.sessionId = req.query.id;
     config.apiKeys = [];
+    config.writeToDisk();
     return res.send('Session key set: "' + config.sessionId + '"');
 });
 
@@ -43,6 +44,7 @@ router.post('/create-session', function(req, res, next){
 
     var apiKey = randomString({length: 10});
     config.apiKeys.push(apiKey);
+    config.writeToDisk();
     var result = {
         helpUrl : req.protocol + '://' + req.get('host') + '/help?apiKey=' + apiKey,
         apiKey: apiKey
