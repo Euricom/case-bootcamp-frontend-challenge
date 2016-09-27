@@ -1,1 +1,1 @@
-for ((i=1;i<=1000;i++)); do curl -H "Content-Type: application/json" -X GET http://bootcamp-challenge.herokuapp.com/api/users?apiKey=qudx1dpOQS; sleep 5; done
+for ((i=1;i<=5000;i++)); do curl -H "Content-Type: application/json" -X GET http://bootcamp-challenge.herokuapp.com/help?apiKey=xosGy7J1VA; echo ======= $i =========; sleep 5; echo ================;done

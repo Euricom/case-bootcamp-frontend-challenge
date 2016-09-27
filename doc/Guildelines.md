@@ -26,7 +26,9 @@ Tooling: text editor, bower, chrome, ...
 
 * [RawGit](https://rawgit.com/)
 * [GoogleDrive as CDN](https://cube3x.com/how-to-use-google-drive-as-cdn-for-your-website/)
+* DropBox public Url's
 * [CodePin](http://codepen.io/)
+* Static file hosting (https://getforge.com of https://www.bitballoon.com)
 * classic hosting (use FTP)
 
 ## Part2 - Access API Service
